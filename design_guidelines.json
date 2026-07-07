@@ -1,0 +1,77 @@
+{
+  "theme": "Light (Primary Dashboard/Marketing) / Dark (Surgical Mode)",
+  "archetype": "4 (Swiss & High-Contrast)",
+  "emotional_tone": "Authoritative, Precise, Clinical, Trustworthy",
+  "colors": {
+    "background_light": "#FFFFFF",
+    "background_alt_light": "#F8F9FA",
+    "background_dark_surgical": "#0B1120",
+    "surface_light": "#FFFFFF",
+    "text_primary_light": "#0F172A",
+    "text_secondary_light": "#475569",
+    "primary_accent": "#2563EB",
+    "secondary_accent": "#0F172A",
+    "vitals_red": "#E11D48",
+    "vitals_green": "#16A34A",
+    "border_light": "#E2E8F0",
+    "border_dark": "#1E293B"
+  },
+  "typography": {
+    "headings": "Cabinet Grotesk",
+    "body": "Manrope",
+    "mono_vitals": "JetBrains Mono",
+    "hierarchy": {
+      "h1": "text-5xl lg:text-6xl tracking-tighter font-medium",
+      "h2": "text-3xl lg:text-4xl tracking-tight font-medium",
+      "h3": "text-xl sm:text-2xl tracking-tight font-medium",
+      "body": "text-base leading-relaxed",
+      "vitals_data": "text-3xl font-mono tracking-widest text-red-500 font-bold",
+      "labels": "text-xs uppercase tracking-[0.2em] font-bold"
+    }
+  },
+  "spacing_and_layout": {
+    "marketing_page": "Generous spacing (p-12, p-24), asymmetrical bento grid for feature highlights. Strict Swiss alignment.",
+    "dashboard": "Dense BENTO grid (gap-6), flat solid surfaces with 1px border and no shadow. No glassmorphism in clinical data context.",
+    "surgical_mode": "Control Room Grid, dense data, edge-to-edge full screen mapping. Floating panels over 3D context."
+  },
+  "components": {
+    "button": "bg-blue-600 text-white hover:bg-blue-700 hover:text-white rounded-md font-medium tracking-wide transition-colors",
+    "panel": "bg-white border border-slate-200 shadow-sm rounded-lg p-6",
+    "layer_control": "flex items-center justify-between gap-3 p-3 hover:bg-slate-50 hover:text-slate-900 border-b border-slate-100 last:border-0",
+    "surgical_vitals_monitor": "bg-slate-900 border border-slate-800 rounded-lg p-4 font-mono text-white",
+    "rules": "Use Shadcn Slider for layer opacities. Use Checkbox for toggling anatomy layers."
+  },
+  "motion": {
+    "hover": "Explicit hover text color, slight lift for cards (-translate-y-1).",
+    "transitions": "transition-all duration-200 ease-in-out",
+    "vitals_pulse": "animate-pulse for active vitals monitor heart rate"
+  },
+  "image_urls": [
+    {
+      "url": "https://images.pexels.com/photos/7108114/pexels-photo-7108114.jpeg",
+      "description": "Sterile modern operating room",
+      "category": "Hero Section Background (overlay with white/90 for text legibility) or Surgical Mode Placeholder"
+    },
+    {
+      "url": "https://images.pexels.com/photos/3985149/pexels-photo-3985149.jpeg",
+      "description": "Medical students studying in a hallway",
+      "category": "Marketing Feature: Student Dashboard / Collaboration"
+    },
+    {
+      "url": "https://images.pexels.com/photos/17092745/pexels-photo-17092745.jpeg",
+      "description": "Close up of surgical tools and OR lighting",
+      "category": "Simulation Library Hero / Feature Card"
+    }
+  ],
+  "testing": {
+    "rules": "All interactive and key informational elements MUST include a `data-testid` attribute. Convention: kebab-case, role-based."
+  },
+  "instructions_to_main_agent": [
+    "Install `lucide-react` or `@phosphor-icons/react` for clinical, highly legible icons.",
+    "Implement the Full-Body 3D Explorer with a Photoshop-style layer control panel. Include Shadcn Checkbox (visibility) and Slider (opacity) for each anatomical layer (Skin, Muscle, Nerves, Arteries, Veins, Bones, Organs).",
+    "Build the Surgical Mode as an immersive, edge-to-edge UI. Use a dark theme (Deep Slate) for the OR-style vitals monitor overlay. Use JetBrains Mono or monospace font for the real-time HR, BP, SpO2 readings.",
+    "Strictly avoid Teal (#1B93A4) or generic purple/mint tech gradients. Use Stark Whites, Deep Slates (#0F172A), and Cobalt Blue (#2563EB) for an authoritative clinical aesthetic.",
+    "Apply solid flat backgrounds with crisp 1px borders for dashboard widgets instead of soft glassmorphism, ensuring optimal data legibility.",
+    "Embed `data-testid` on all buttons, layer toggles, tab triggers, inputs, and sliders to ensure comprehensive test coverage."
+  ]
+}
