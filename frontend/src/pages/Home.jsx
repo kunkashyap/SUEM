@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import Nav from '@/components/Nav';
 import AnatomyFigure from '@/components/AnatomyFigure';
+import Body3D from '@/components/Body3D';
 import { ArrowRight, ShieldCheck, Activity, Scissors, Brain, HeartPulse, Microscope, Scan, Siren, Baby, Bone, Stethoscope, PawPrint, Sparkles, Play, CheckCircle2, GraduationCap, Quote } from 'lucide-react';
 
 const ICONS = { anatomy: Activity, physiology: HeartPulse, surgery: Scissors, pathology: Microscope, radiology: Scan, emergency: Siren, obstetrics: Baby, orthopedics: Bone, neurosurgery: Brain, dentistry: Sparkles, nursing: Stethoscope, veterinary: PawPrint };
@@ -73,7 +74,7 @@ export default function Home() {
               <div className="bg-white border border-slate-200 px-2 py-1 text-[9px] uppercase tracking-widest font-mono">Adult ♂</div>
             </div>
             <div className="relative bg-gradient-to-b from-slate-50 to-white h-[580px] flex items-center justify-center">
-              <AnatomyFigure layers={{ skin: 0.35, muscle: 0.6, bones: 0.85, organs: 0.9, arteries: 1, veins: 0.75, nerves: 0.55 }} className="h-full w-auto anat-rotate" />
+              <Body3D layers={{ skin: 0.35, muscle: 0.55, bones: 0.85, organs: 0.9 }} spin className="w-full h-full" />
             </div>
             <div className="absolute -bottom-3 -right-3 bg-slate-900 text-white p-3 rounded-lg font-mono text-xs shadow-xl" data-testid="hero-vitals-mini">
               <div className="flex items-center gap-2 mb-1"><div className="w-2 h-2 bg-emerald-400 rounded-full vitals-flicker" /><span className="text-[9px] tracking-widest uppercase">Live · OR</span></div>

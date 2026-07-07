@@ -17,6 +17,8 @@ import StudentDashboard from '@/pages/StudentDashboard';
 import FacultyDashboard from '@/pages/FacultyDashboard';
 import Leaderboard from '@/pages/Leaderboard';
 import Search from '@/pages/Search';
+import EmergencyMode from '@/pages/EmergencyMode';
+import TeamMode from '@/pages/TeamMode';
 import '@/App.css';
 
 function Protected({ children }) {
@@ -45,6 +47,8 @@ export default function App() {
           <Route path="/dashboard" element={<Protected><StudentDashboard /></Protected>} />
           <Route path="/faculty" element={<Protected><FacultyDashboard /></Protected>} />
           <Route path="/leaderboard" element={<Leaderboard />} />
+          <Route path="/emergency" element={<Protected><EmergencyMode /></Protected>} />
+          <Route path="/team" element={<Protected><TeamMode /></Protected>} />
           <Route path="/search" element={<Search />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

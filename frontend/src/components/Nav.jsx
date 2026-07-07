@@ -7,9 +7,10 @@ const links = [
   { to: '/explore', label: 'Explore' },
   { to: '/simulations', label: 'Simulations' },
   { to: '/explorer', label: '3D Explorer' },
-  { to: '/cases', label: 'Clinical Cases' },
-  { to: '/quizzes', label: 'Quiz Center' },
-  { to: '/leaderboard', label: 'Leaderboard' },
+  { to: '/emergency', label: 'Emergency' },
+  { to: '/team', label: 'Team OR' },
+  { to: '/cases', label: 'Cases' },
+  { to: '/quizzes', label: 'Quizzes' },
 ];
 
 export default function Nav() {

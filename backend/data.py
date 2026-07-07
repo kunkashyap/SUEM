@@ -93,3 +93,42 @@ CLINICAL_CASES = [
      'diagnosis': 'Anterior STEMI',
      'plan': 'Aspirin 325mg, clopidogrel load, heparin, urgent PCI within 90 min.'},
 ]
+
+PROCEDURES = {
+    'sim-appendectomy': APPENDECTOMY_STEPS,
+    'sim-cpr': [
+        {'index': 1, 'title': 'Scene Safety & Responsiveness', 'instruction': 'Ensure the scene is safe, tap and shout to check responsiveness.', 'instrument': 'hands', 'critical': True, 'safe_actions': ['assess']},
+        {'index': 2, 'title': 'Call for Help', 'instruction': 'Activate emergency response and request an AED.', 'instrument': 'phone', 'critical': True, 'safe_actions': ['call']},
+        {'index': 3, 'title': 'Check Pulse & Breathing', 'instruction': 'Check for carotid pulse for no more than 10 seconds.', 'instrument': 'hands', 'critical': True, 'safe_actions': ['check-pulse']},
+        {'index': 4, 'title': 'Begin Chest Compressions', 'instruction': '30 compressions at 100-120/min, depth 5-6 cm on lower half of sternum.', 'instrument': 'hands', 'critical': True, 'safe_actions': ['compress'], 'mistakes':[{'action':'slow','severity':'critical','consequence':'Inadequate perfusion'}]},
+        {'index': 5, 'title': 'Open Airway', 'instruction': 'Head-tilt / chin-lift (or jaw-thrust if trauma suspected).', 'instrument': 'hands', 'critical': False, 'safe_actions': ['airway']},
+        {'index': 6, 'title': 'Give 2 Rescue Breaths', 'instruction': 'Each breath over 1 second, watch chest rise.', 'instrument': 'bag-mask', 'critical': False, 'safe_actions': ['ventilate']},
+        {'index': 7, 'title': 'Attach AED', 'instruction': 'Apply pads, let AED analyze rhythm.', 'instrument': 'aed', 'critical': True, 'safe_actions': ['attach']},
+        {'index': 8, 'title': 'Shock if Advised & Resume CPR', 'instruction': 'Clear the patient, deliver shock, immediately resume compressions for 2 minutes.', 'instrument': 'aed', 'critical': True, 'safe_actions': ['shock']},
+    ],
+    'sim-suture': [
+        {'index': 1, 'title': 'Wound Assessment', 'instruction': 'Inspect wound for depth, contamination, and vascular status.', 'instrument': 'forceps', 'critical': False, 'safe_actions': ['assess']},
+        {'index': 2, 'title': 'Irrigate & Clean', 'instruction': 'Irrigate with sterile saline until visibly clean.', 'instrument': 'syringe', 'critical': True, 'safe_actions': ['irrigate']},
+        {'index': 3, 'title': 'Local Anesthesia', 'instruction': 'Infiltrate lidocaine 1% along wound edges.', 'instrument': 'syringe', 'critical': True, 'safe_actions': ['inject']},
+        {'index': 4, 'title': 'Load Needle', 'instruction': 'Grasp needle 2/3 back from tip with needle holder.', 'instrument': 'needle-holder', 'critical': False, 'safe_actions': ['load']},
+        {'index': 5, 'title': 'Place Simple Interrupted Suture', 'instruction': 'Enter skin at 90°, exit equidistant on opposite side, 3-4 mm bites.', 'instrument': 'needle-holder', 'critical': True, 'safe_actions': ['suture'], 'mistakes':[{'action':'shallow','severity':'moderate','consequence':'Wound dehiscence risk'}]},
+        {'index': 6, 'title': 'Instrument Tie', 'instruction': 'Two throws for the first knot, then alternate. Do not strangulate tissue.', 'instrument': 'needle-holder', 'critical': True, 'safe_actions': ['tie']},
+        {'index': 7, 'title': 'Cut Suture', 'instruction': 'Leave 5 mm tails.', 'instrument': 'scissors', 'critical': False, 'safe_actions': ['cut']},
+        {'index': 8, 'title': 'Dress Wound', 'instruction': 'Apply sterile non-adherent dressing.', 'instrument': 'dressing', 'critical': False, 'safe_actions': ['dress']},
+    ],
+    'sim-ctscan': [
+        {'index': 1, 'title': 'Verify Study & Orientation', 'instruction': 'Confirm patient ID, study date, and orientation (R/L markers).', 'instrument': 'viewer', 'critical': True, 'safe_actions': ['verify']},
+        {'index': 2, 'title': 'Assess Skull & Bone Windows', 'instruction': 'Look for fractures, especially at temporal bones and skull base.', 'instrument': 'viewer', 'critical': True, 'safe_actions': ['scan-bone']},
+        {'index': 3, 'title': 'Extra-axial Spaces', 'instruction': 'Rule out epidural/subdural/subarachnoid hemorrhage.', 'instrument': 'viewer', 'critical': True, 'safe_actions': ['scan-extra'], 'mistakes':[{'action':'miss-bleed','severity':'critical','consequence':'Missed intracranial hemorrhage'}]},
+        {'index': 4, 'title': 'Brain Parenchyma', 'instruction': 'Assess grey-white differentiation and for hypodensities suggesting infarct.', 'instrument': 'viewer', 'critical': True, 'safe_actions': ['scan-brain']},
+        {'index': 5, 'title': 'Ventricles & Midline', 'instruction': 'Check ventricular size, midline shift, effacement of sulci.', 'instrument': 'viewer', 'critical': True, 'safe_actions': ['scan-ventricles']},
+        {'index': 6, 'title': 'Formulate Report', 'instruction': 'Structured findings + impression + recommend next study.', 'instrument': 'viewer', 'critical': False, 'safe_actions': ['report']},
+    ],
+}
+
+PROCEDURE_META = {
+    'sim-appendectomy': {'title': 'Open Appendectomy', 'context': 'RLQ · McBurney incision', 'instruments': ['scrub-brush','gloves','drape','marker','scalpel','cautery','scissors','forceps','clamp','suture','needle-holder','dressing']},
+    'sim-cpr': {'title': 'Adult BLS / CPR', 'context': 'Emergency Bay · Adult Arrest', 'instruments': ['hands','phone','bag-mask','aed']},
+    'sim-suture': {'title': 'Simple Interrupted Suturing', 'context': 'Minor OT · 4 cm forearm laceration', 'instruments': ['forceps','syringe','needle-holder','scissors','dressing']},
+    'sim-ctscan': {'title': 'Head CT Interpretation', 'context': 'Radiology Reading Room · Non-contrast Head CT', 'instruments': ['viewer']},
+}

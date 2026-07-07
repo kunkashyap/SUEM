@@ -62,7 +62,7 @@ export default function SimulationLibrary() {
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6" data-testid="sim-grid">
           {sims.map((s) => (
-            <Link key={s.id} to={s.id === 'sim-appendectomy' ? `/procedure/${s.id}` : `/simulation/${s.id}`} data-testid={`sim-card-${s.id}`}
+            <Link key={s.id} to={['sim-appendectomy','sim-cpr','sim-suture','sim-ctscan'].includes(s.id) ? `/procedure/${s.id}` : `/simulation/${s.id}`} data-testid={`sim-card-${s.id}`}
               className="bg-white border border-slate-200 rounded-lg p-6 hover-lift hover:border-slate-900 relative overflow-hidden group">
               <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-blue-50 to-transparent rounded-bl-[100px] opacity-0 group-hover:opacity-100 transition-opacity" />
               <div className="flex items-center justify-between mb-4 relative">

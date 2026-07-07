@@ -28,7 +28,7 @@ api = APIRouter(prefix="/api")
 bearer = HTTPBearer(auto_error=False)
 
 # -------------------- Data seed --------------------
-from data import CATEGORIES, SIMULATIONS, QUIZZES, CLINICAL_CASES, APPENDECTOMY_STEPS, ANATOMY_LAYERS
+from data import CATEGORIES, SIMULATIONS, QUIZZES, CLINICAL_CASES, APPENDECTOMY_STEPS, ANATOMY_LAYERS, PROCEDURES, PROCEDURE_META
 
 # -------------------- Models --------------------
 class RegisterIn(BaseModel):
@@ -179,6 +179,12 @@ async def get_simulation(sim_id: str):
 @api.get('/procedures/appendectomy/steps')
 async def appendectomy_steps():
     return APPENDECTOMY_STEPS
+
+@api.get('/procedures/{proc_id}')
+async def get_procedure(proc_id: str):
+    if proc_id not in PROCEDURES:
+        raise HTTPException(404, 'Procedure not found')
+    return {'id': proc_id, 'meta': PROCEDURE_META[proc_id], 'steps': PROCEDURES[proc_id]}
 
 @api.get('/anatomy/layers')
 async def anatomy_layers():

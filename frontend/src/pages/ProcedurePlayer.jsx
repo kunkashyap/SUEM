@@ -18,12 +18,20 @@ const INSTRUMENTS = [
   { id: 'suture', label: 'Suture 2-0' },
   { id: 'needle-holder', label: 'Needle Holder' },
   { id: 'dressing', label: 'Dressing' },
+  { id: 'hands', label: 'Hands' },
+  { id: 'phone', label: 'Phone / EMS' },
+  { id: 'bag-mask', label: 'Bag Mask' },
+  { id: 'aed', label: 'AED' },
+  { id: 'syringe', label: 'Syringe' },
+  { id: 'viewer', label: 'CT Viewer' },
 ];
 
 export default function ProcedurePlayer() {
   const { id } = useParams();
   const nav = useNavigate();
   const [steps, setSteps] = useState([]);
+  const [meta, setMeta] = useState({ title: 'Loading…', context: '' });
+  const [allowedInstruments, setAllowedInstruments] = useState(null);
   const [current, setCurrent] = useState(0);
   const [selectedInstrument, setSelectedInstrument] = useState(null);
   const [completed, setCompleted] = useState([]);
@@ -34,7 +42,17 @@ export default function ProcedurePlayer() {
   const [showComplete, setShowComplete] = useState(false);
   const [feedback, setFeedback] = useState(null); // { severity, message }
 
-  useEffect(() => { api.get('/procedures/appendectomy/steps').then((r) => setSteps(r.data)); }, []);
+  useEffect(() => {
+    api.get(`/procedures/${id}`).then((r) => {
+      setSteps(r.data.steps);
+      setMeta(r.data.meta);
+      setAllowedInstruments(r.data.meta.instruments);
+    }).catch(() => {
+      // fallback for legacy route
+      if (id === 'sim-appendectomy') api.get('/procedures/appendectomy/steps').then((r) => setSteps(r.data));
+    });
+  }, [id]);
+  const visibleInstruments = allowedInstruments ? INSTRUMENTS.filter(i => allowedInstruments.includes(i.id)) : INSTRUMENTS;
   const step = steps[current];
 
   useEffect(() => {
@@ -115,8 +133,8 @@ export default function ProcedurePlayer() {
         <div className="flex items-center gap-4">
           <button onClick={() => nav('/simulations')} data-testid="exit-or" className="p-1.5 hover:bg-slate-800 rounded"><X className="w-4 h-4" /></button>
           <div>
-            <div className="font-display font-semibold text-sm">Open Appendectomy</div>
-            <div className="text-[10px] uppercase tracking-widest text-slate-500 font-mono">OR-3 · Case A-22 · Intermediate</div>
+            <div className="font-display font-semibold text-sm">{meta.title}</div>
+            <div className="text-[10px] uppercase tracking-widest text-slate-500 font-mono">{meta.context || 'Live simulation'}</div>
           </div>
         </div>
         <div className="flex items-center gap-4">
@@ -132,7 +150,7 @@ export default function ProcedurePlayer() {
         <aside className="border-r border-slate-800 p-4 overflow-y-auto" data-testid="instruments-tray">
           <div className="label-caps text-slate-500 mb-3">Instrument tray</div>
           <div className="grid grid-cols-2 gap-2">
-            {INSTRUMENTS.map((i) => (
+            {visibleInstruments.map((i) => (
               <button key={i.id} onClick={() => setSelectedInstrument(i.id)} data-testid={`instr-${i.id}`}
                 className={`p-3 border rounded text-xs font-medium text-left transition-colors ${selectedInstrument === i.id ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-800 hover:border-slate-500 bg-slate-900'} ${step.instrument === i.id ? 'ring-1 ring-amber-400' : ''}`}>
                 <Scissors className="w-3.5 h-3.5 mb-1.5 opacity-60" />
