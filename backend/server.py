@@ -287,84 +287,84 @@ async def leaderboard():
     users = await db.users.find({}, {'_id': 0, 'password_hash': 0}).sort('xp', -1).limit(20).to_list(20)
     return [{'name': u['name'], 'xp': u.get('xp', 0), 'institution': u.get('institution'), 'role': u.get('role', 'student')} for u in users]
 
-# -------------------- AI Tutor (Claude via Emergent) --------------------
-from emergentintegrations.llm.chat import LlmChat, UserMessage, TextDelta, StreamDone
+# # -------------------- AI Tutor (Claude via Emergent) --------------------
+# from emergentintegrations.llm.chat import LlmChat, UserMessage, TextDelta, StreamDone
 
-TUTOR_SYSTEM = (
-    "You are Dr. Ada, an expert Socratic surgical & anatomy tutor inside an interactive 3D medical training simulator. "
-    "Teach medical students by guided inquiry — ask leading questions, give concise clinical explanations, and reference the current scene when provided. "
-    "When the student is about to make a critical mistake, warn them and explain WHY. Keep answers short, structured, and use bullet points when helpful. "
-    "Always ground your response in the provided context (current step, structure highlighted, vitals). If context is missing, ask a clarifying question."
-)
+# TUTOR_SYSTEM = (
+#     "You are Dr. Ada, an expert Socratic surgical & anatomy tutor inside an interactive 3D medical training simulator. "
+#     "Teach medical students by guided inquiry — ask leading questions, give concise clinical explanations, and reference the current scene when provided. "
+#     "When the student is about to make a critical mistake, warn them and explain WHY. Keep answers short, structured, and use bullet points when helpful. "
+#     "Always ground your response in the provided context (current step, structure highlighted, vitals). If context is missing, ask a clarifying question."
+# )
 
-@api.post('/tutor/chat')
-async def tutor_chat(payload: TutorMessageIn, user=Depends(get_current_user)):
-    ctx_str = ''
-    if payload.context:
-        ctx_str = f"\n\n[Scene Context]\n{json.dumps(payload.context, indent=2)}"
+# @api.post('/tutor/chat')
+# async def tutor_chat(payload: TutorMessageIn, user=Depends(get_current_user)):
+#     ctx_str = ''
+#     if payload.context:
+#         ctx_str = f"\n\n[Scene Context]\n{json.dumps(payload.context, indent=2)}"
 
-    async def gen():
-        try:
-            chat = LlmChat(
-                api_key=EMERGENT_LLM_KEY,
-                session_id=f"{user['id']}:{payload.session_id}",
-                system_message=TUTOR_SYSTEM,
-            ).with_model('anthropic', 'claude-sonnet-4-6')
-            um = UserMessage(text=payload.message + ctx_str)
-            async for ev in chat.stream_message(um):
-                if isinstance(ev, TextDelta):
-                    yield f"data: {json.dumps({'delta': ev.content})}\n\n"
-                elif isinstance(ev, StreamDone):
-                    yield f"data: {json.dumps({'done': True})}\n\n"
-                    break
-        except Exception as e:
-            yield f"data: {json.dumps({'error': str(e)})}\n\n"
+#     async def gen():
+#         try:
+#             chat = LlmChat(
+#                 api_key=EMERGENT_LLM_KEY,
+#                 session_id=f"{user['id']}:{payload.session_id}",
+#                 system_message=TUTOR_SYSTEM,
+#             ).with_model('anthropic', 'claude-sonnet-4-6')
+#             um = UserMessage(text=payload.message + ctx_str)
+#             async for ev in chat.stream_message(um):
+#                 if isinstance(ev, TextDelta):
+#                     yield f"data: {json.dumps({'delta': ev.content})}\n\n"
+#                 elif isinstance(ev, StreamDone):
+#                     yield f"data: {json.dumps({'done': True})}\n\n"
+#                     break
+#         except Exception as e:
+#             yield f"data: {json.dumps({'error': str(e)})}\n\n"
 
-    # persist message (fire and forget-ish)
-    await db.tutor_messages.insert_one({
-        'id': str(uuid.uuid4()),
-        'user_id': user['id'],
-        'session_id': payload.session_id,
-        'message': payload.message,
-        'context': payload.context,
-        'created_at': datetime.now(timezone.utc).isoformat(),
-    })
-    return StreamingResponse(gen(), media_type='text/event-stream', headers={'Cache-Control': 'no-cache', 'X-Accel-Buffering': 'no'})
+#     # persist message (fire and forget-ish)
+#     await db.tutor_messages.insert_one({
+#         'id': str(uuid.uuid4()),
+#         'user_id': user['id'],
+#         'session_id': payload.session_id,
+#         'message': payload.message,
+#         'context': payload.context,
+#         'created_at': datetime.now(timezone.utc).isoformat(),
+#     })
+#     return StreamingResponse(gen(), media_type='text/event-stream', headers={'Cache-Control': 'no-cache', 'X-Accel-Buffering': 'no'})
 
-@api.get('/tutor/history/{session_id}')
-async def tutor_history(session_id: str, user=Depends(get_current_user)):
-    msgs = await db.tutor_messages.find({'user_id': user['id'], 'session_id': session_id}, {'_id': 0}).sort('created_at', 1).to_list(200)
-    return msgs
+# @api.get('/tutor/history/{session_id}')
+# async def tutor_history(session_id: str, user=Depends(get_current_user)):
+#     msgs = await db.tutor_messages.find({'user_id': user['id'], 'session_id': session_id}, {'_id': 0}).sort('created_at', 1).to_list(200)
+#     return msgs
 
-# -------------------- Search --------------------
-@api.get('/search')
-async def search(q: str):
-    q_lower = q.lower()
-    results = []
-    for s in SIMULATIONS:
-        if q_lower in s['title'].lower() or q_lower in s.get('description', '').lower() or any(q_lower in t.lower() for t in s.get('tags', [])):
-            results.append({'type': 'simulation', 'id': s['id'], 'title': s['title'], 'category': s['category']})
-    for c in CLINICAL_CASES:
-        if q_lower in c['title'].lower() or q_lower in c.get('presenting_complaint', '').lower():
-            results.append({'type': 'case', 'id': c['id'], 'title': c['title']})
-    for layer in ANATOMY_LAYERS:
-        for st in layer.get('structures', []):
-            if q_lower in st['name'].lower():
-                results.append({'type': 'anatomy', 'id': st['id'], 'title': st['name'], 'layer': layer['name']})
-    return results[:30]
+# # -------------------- Search --------------------
+# @api.get('/search')
+# async def search(q: str):
+#     q_lower = q.lower()
+#     results = []
+#     for s in SIMULATIONS:
+#         if q_lower in s['title'].lower() or q_lower in s.get('description', '').lower() or any(q_lower in t.lower() for t in s.get('tags', [])):
+#             results.append({'type': 'simulation', 'id': s['id'], 'title': s['title'], 'category': s['category']})
+#     for c in CLINICAL_CASES:
+#         if q_lower in c['title'].lower() or q_lower in c.get('presenting_complaint', '').lower():
+#             results.append({'type': 'case', 'id': c['id'], 'title': c['title']})
+#     for layer in ANATOMY_LAYERS:
+#         for st in layer.get('structures', []):
+#             if q_lower in st['name'].lower():
+#                 results.append({'type': 'anatomy', 'id': st['id'], 'title': st['name'], 'layer': layer['name']})
+#     return results[:30]
 
-app.include_router(api)
+# app.include_router(api)
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_credentials=True,
-    allow_origins=os.environ.get('CORS_ORIGINS', '*').split(','),
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+# app.add_middleware(
+#     CORSMiddleware,
+#     allow_credentials=True,
+#     allow_origins=os.environ.get('CORS_ORIGINS', '*').split(','),
+#     allow_methods=["*"],
+#     allow_headers=["*"],
+# )
 
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+# logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-@app.on_event('shutdown')
-async def _shutdown():
-    client.close()
+# @app.on_event('shutdown')
+# async def _shutdown():
+#     client.close()
