@@ -20,6 +20,9 @@ import Search from '@/pages/Search';
 import EmergencyMode from '@/pages/EmergencyMode';
 import TeamMode from '@/pages/TeamMode';
 import '@/App.css';
+import HeartViewer from './components/HeartViewer/HeartViewer';
+import HeartSimulation from "@/pages/HeartSimulation";
+
 
 function Protected({ children }) {
   const { user, loading } = useAuth();
@@ -51,9 +54,12 @@ export default function App() {
           <Route path="/team" element={<Protected><TeamMode /></Protected>} />
           <Route path="/search" element={<Search />} />
           <Route path="*" element={<Navigate to="/" replace />} />
+          <Route path="/heart" element={<HeartSimulation />} />
         </Routes>
         <AITutor />
       </BrowserRouter>
     </AuthProvider>
+    
+      
   );
 }
