@@ -353,15 +353,15 @@ async def leaderboard():
 #                 results.append({'type': 'anatomy', 'id': st['id'], 'title': st['name'], 'layer': layer['name']})
 #     return results[:30]
 
-# app.include_router(api)
+app.include_router(api)
 
-# app.add_middleware(
-#     CORSMiddleware,
-#     allow_credentials=True,
-#     allow_origins=os.environ.get('CORS_ORIGINS', '*').split(','),
-#     allow_methods=["*"],
-#     allow_headers=["*"],
-# )
+app.add_middleware(
+    CORSMiddleware,
+    allow_credentials=True,
+    allow_origins=os.environ.get('CORS_ORIGINS', '*').split(','),
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
