@@ -15,6 +15,7 @@ CATEGORIES = [
 
 SIMULATIONS = [
     {'id': 'sim-appendectomy', 'title': 'Open Appendectomy', 'category': 'surgery', 'difficulty': 'Intermediate', 'duration_min': 25, 'description': 'Step-by-step removal of an inflamed appendix through a McBurney incision.', 'tags': ['appendix', 'general surgery', 'abdomen'], 'steps': 12, 'featured': True},
+    {'id': 'sim-heart-surgery', 'title': 'Heart Simulation', 'category': 'surgery', 'difficulty': 'Intermediate', 'duration_min': 20, 'description': 'Perform a full procedure simulation on a human heart. Learn key cardiac surgical techniques.', 'tags': ['heart', 'cardiac', 'surgery'], 'steps': 8, 'featured': True},
     {'id': 'sim-heart-anatomy', 'title': 'Heart: Chambers & Conduction', 'category': 'anatomy', 'difficulty': 'Beginner', 'duration_min': 15, 'description': 'Explore the four chambers, valves, and electrical conduction system.', 'tags': ['cardiac', 'circulation'], 'steps': 6, 'featured': True},
     {'id': 'sim-brain-cn', 'title': 'Cranial Nerves I–XII', 'category': 'anatomy', 'difficulty': 'Intermediate', 'duration_min': 20, 'description': 'Locate and identify all twelve cranial nerves with functional testing.', 'tags': ['brain', 'nerves'], 'steps': 12},
     {'id': 'sim-suture', 'title': 'Basic Suturing Techniques', 'category': 'surgery', 'difficulty': 'Beginner', 'duration_min': 12, 'description': 'Simple interrupted, running, and vertical mattress sutures.', 'tags': ['skills', 'suturing'], 'steps': 5},

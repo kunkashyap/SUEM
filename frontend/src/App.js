@@ -53,8 +53,8 @@ export default function App() {
           <Route path="/emergency" element={<Protected><EmergencyMode /></Protected>} />
           <Route path="/team" element={<Protected><TeamMode /></Protected>} />
           <Route path="/search" element={<Search />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
           <Route path="/heart" element={<HeartSimulation />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
         <AITutor />
       </BrowserRouter>
