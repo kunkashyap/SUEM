@@ -221,4 +221,342 @@ Collections include:
 
 ---
 
-# Folder Structure
+# ⚙️ Installation Guide
+
+Follow the steps below to set up MedSim on your local machine.
+
+---
+
+## Prerequisites
+
+Before starting, make sure the following software is installed on your system.
+
+### Required Software
+
+- Node.js (v18 or above)
+- npm (comes with Node.js)
+- Python (v3.11 or above)
+- Git
+- MongoDB Atlas Account (or Local MongoDB Server)
+- Visual Studio Code (Recommended)
+
+---
+
+## Step 1 — Clone the Repository
+
+```bash
+git clone https://github.com/<your-username>/surgery_reo.git
+
+cd surgery_reo
+```
+
+---
+
+# Frontend Installation
+
+Navigate to the frontend directory.
+
+```bash
+cd frontend
+```
+
+Install all required dependencies.
+
+```bash
+npm install
+```
+
+Start the React development server.
+
+```bash
+npm start
+```
+
+The frontend will start at
+
+```
+http://localhost:3000
+```
+
+---
+
+# Backend Installation
+
+Open another terminal.
+
+Navigate to the backend folder.
+
+```bash
+cd backend
+```
+
+---
+
+## Create a Virtual Environment
+
+### Windows
+
+```bash
+python -m venv venv
+```
+
+Activate it.
+
+```bash
+venv\Scripts\activate
+```
+
+### Linux / macOS
+
+```bash
+python3 -m venv venv
+
+source venv/bin/activate
+```
+
+---
+
+## Install Python Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+If your `requirements.txt` is outdated, install the packages manually.
+
+```bash
+pip install fastapi
+pip install uvicorn
+pip install motor
+pip install pymongo
+pip install python-dotenv
+pip install bcrypt
+pip install PyJWT
+pip install email-validator
+```
+
+---
+
+# Configure Environment Variables
+
+Inside the **backend** folder, create a file named
+
+```
+.env
+```
+
+Example:
+
+```env
+MONGO_URL=your_mongodb_connection_string
+
+DB_NAME=medsim
+
+JWT_SECRET=your_secret_key
+
+JWT_ALGORITHM=HS256
+
+JWT_EXPIRE_MINUTES=10080
+```
+
+Replace these values with your own configuration.
+
+---
+
+# MongoDB Setup
+
+Create a MongoDB database.
+
+Example Database Name
+
+```
+medsim
+```
+
+No collections need to be created manually.
+
+FastAPI will automatically create them when users register or interact with the application.
+
+Typical collections include
+
+```
+users
+
+attempts
+
+quiz_results
+
+tutor_messages
+```
+
+---
+
+# Start the Backend Server
+
+Run
+
+```bash
+uvicorn server:app --reload
+```
+
+The backend server will start at
+
+```
+http://127.0.0.1:8000
+```
+
+---
+
+# Verify Backend
+
+Open
+
+```
+http://127.0.0.1:8000/api
+```
+
+Expected response
+
+```json
+{
+  "service": "MedSim API",
+  "ok": true
+}
+```
+
+---
+
+# API Documentation
+
+Swagger UI
+
+```
+http://127.0.0.1:8000/docs
+```
+
+ReDoc
+
+```
+http://127.0.0.1:8000/redoc
+```
+
+These pages allow you to test every API endpoint directly from your browser.
+
+---
+
+# Running the Complete Project
+
+Open two terminals.
+
+### Terminal 1
+
+```bash
+cd backend
+
+venv\Scripts\activate
+
+uvicorn server:app --reload
+```
+
+### Terminal 2
+
+```bash
+cd frontend
+
+npm start
+```
+
+Now open
+
+```
+http://localhost:3000
+```
+
+Your MedSim application should now be running successfully.
+
+---
+
+# Default Workflow
+
+1. Start MongoDB.
+2. Start the FastAPI backend.
+3. Start the React frontend.
+4. Register a new account.
+5. Log in to the application.
+6. Explore simulations, quizzes, anatomy models, and dashboards.
+
+---
+
+# Troubleshooting
+
+### Backend shows "ModuleNotFoundError"
+
+Install missing packages.
+
+```bash
+pip install -r requirements.txt
+```
+
+---
+
+### Port 8000 Already in Use
+
+Terminate the process using the port or start Uvicorn on another port.
+
+```bash
+uvicorn server:app --reload --port 8001
+```
+
+---
+
+### Port 3000 Already in Use
+
+React will prompt you to run on another available port.
+
+---
+
+### MongoDB Connection Failed
+
+Check that:
+
+- MongoDB is running.
+- Your `MONGO_URL` is correct.
+- Your IP address is whitelisted (MongoDB Atlas).
+- Your database user credentials are valid.
+
+---
+
+### Login Returns 401 Unauthorized
+
+Verify:
+
+- The user exists in MongoDB.
+- The password is correct.
+- The JWT configuration in `.env` is correct.
+
+---
+
+### Frontend Displays Network Error
+
+Ensure:
+
+- The FastAPI backend is running.
+- The frontend is using the correct backend URL.
+- CORS is configured to allow requests from `http://localhost:3000`.
+
+---
+
+# Project URLs
+
+| Service | URL |
+|----------|-----|
+| Frontend | http://localhost:3000 |
+| Backend | http://127.0.0.1:8000 |
+| API Documentation | http://127.0.0.1:8000/docs |
+| ReDoc | http://127.0.0.1:8000/redoc |
+
+---
+
+# You're Ready!
+
+Once both servers are running, you can begin using MedSim by registering an account, logging in, and exploring the platform's simulations, quizzes, anatomy explorer, and performance dashboard.
