@@ -2,6 +2,7 @@ import React from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import { Search, Menu } from 'lucide-react';
+import ThemeToggle from '@/components/ThemeToggle/ThemeToggle';
 
 const links = [
   { to: '/explore', label: 'Explore' },
@@ -52,6 +53,7 @@ export default function Nav() {
             className="flex-1 bg-transparent outline-none text-sm placeholder:text-slate-400" />
         </form>
         <div className="flex items-center gap-2 ml-auto md:ml-0">
+  <ThemeToggle />
           {user ? (
             <>
               <Link to={user.role === 'faculty' ? '/faculty' : '/dashboard'} data-testid="nav-dashboard"
