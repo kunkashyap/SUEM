@@ -19,7 +19,11 @@ import Leaderboard from '@/pages/Leaderboard';
 import Search from '@/pages/Search';
 import EmergencyMode from '@/pages/EmergencyMode';
 import TeamMode from '@/pages/TeamMode';
+import { ThemeProvider } from '@/context/ThemeContext.jsx';
 import '@/App.css';
+import HeartViewer from './components/HeartViewer/HeartViewer';
+import HeartSimulation from "@/pages/HeartSimulation";
+
 
 function Protected({ children }) {
   const { user, loading } = useAuth();
@@ -30,30 +34,33 @@ function Protected({ children }) {
 
 export default function App() {
   return (
-    <AuthProvider>
-      <BrowserRouter>
-        <Toaster position="top-right" richColors />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/explore" element={<Explore />} />
-          <Route path="/simulations" element={<SimulationLibrary />} />
-          <Route path="/simulation/:id" element={<SimulationDetail />} />
-          <Route path="/explorer" element={<FullBodyExplorer />} />
-          <Route path="/procedure/:id" element={<Protected><ProcedurePlayer /></Protected>} />
-          <Route path="/quizzes" element={<QuizCenter />} />
-          <Route path="/cases" element={<ClinicalCases />} />
-          <Route path="/dashboard" element={<Protected><StudentDashboard /></Protected>} />
-          <Route path="/faculty" element={<Protected><FacultyDashboard /></Protected>} />
-          <Route path="/leaderboard" element={<Leaderboard />} />
-          <Route path="/emergency" element={<Protected><EmergencyMode /></Protected>} />
-          <Route path="/team" element={<Protected><TeamMode /></Protected>} />
-          <Route path="/search" element={<Search />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-        <AITutor />
-      </BrowserRouter>
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <BrowserRouter>
+          <Toaster position="top-right" richColors />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/explore" element={<Explore />} />
+            <Route path="/simulations" element={<SimulationLibrary />} />
+            <Route path="/simulation/:id" element={<SimulationDetail />} />
+            <Route path="/explorer" element={<FullBodyExplorer />} />
+            <Route path="/procedure/:id" element={<Protected><ProcedurePlayer /></Protected>} />
+            <Route path="/quizzes" element={<QuizCenter />} />
+            <Route path="/cases" element={<ClinicalCases />} />
+            <Route path="/dashboard" element={<Protected><StudentDashboard /></Protected>} />
+            <Route path="/faculty" element={<Protected><FacultyDashboard /></Protected>} />
+            <Route path="/leaderboard" element={<Leaderboard />} />
+            <Route path="/emergency" element={<Protected><EmergencyMode /></Protected>} />
+            <Route path="/team" element={<Protected><TeamMode /></Protected>} />
+            <Route path="/search" element={<Search />} />
+            <Route path="/heart" element={<HeartSimulation />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+          <AITutor />
+        </BrowserRouter>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }

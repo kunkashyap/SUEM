@@ -1,0 +1,102 @@
+/* ═══════════════════════════════════════════════════════════════════
+   ThemeToggle — Premium pill-style toggle with smooth animations
+   ═══════════════════════════════════════════════════════════════════ */
+
+.theme-toggle {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  width: 3.25rem;
+  height: 1.75rem;
+  border-radius: 9999px;
+  border: 1px solid #E5E7EB;
+  background-color: #F1F5F9;
+  cursor: pointer;
+  padding: 0;
+  flex-shrink: 0;
+  transition: background-color 250ms ease-in-out,
+              border-color 250ms ease-in-out,
+              box-shadow 250ms ease-in-out;
+  outline: none;
+}
+
+.theme-toggle:hover {
+  border-color: #94A3B8;
+}
+
+.theme-toggle:focus-visible {
+  outline: 2px solid #3B82F6;
+  outline-offset: 2px;
+}
+
+/* Dark mode toggle shell */
+[data-theme='dark'] .theme-toggle {
+  background-color: #1E293B;
+  border-color: #374151;
+}
+
+[data-theme='dark'] .theme-toggle:hover {
+  border-color: #4B5563;
+}
+
+/* ─── Sliding thumb ─── */
+.theme-toggle .toggle-thumb {
+  position: absolute;
+  left: 3px;
+  top: 3px;
+  width: 1.25rem;
+  height: 1.25rem;
+  background-color: #FFFFFF;
+  border-radius: 9999px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.06);
+  transform: translateX(0);
+  transition: transform 250ms ease-in-out,
+              background-color 250ms ease-in-out,
+              box-shadow 250ms ease-in-out;
+  z-index: 2;
+}
+
+[data-theme='dark'] .theme-toggle .toggle-thumb {
+  transform: translateX(1.375rem);
+  background-color: #E2E8F0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+/* ─── Icon containers ─── */
+.theme-toggle .toggle-icon {
+  position: absolute;
+  top: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 1;
+  transition: opacity 250ms ease-in-out,
+              transform 250ms ease-in-out;
+}
+
+/* Sun icon — sits on the left, visible in light mode */
+.theme-toggle .toggle-icon-sun {
+  left: 5px;
+  transform: translateY(-50%) rotate(0deg) scale(1);
+  opacity: 1;
+  color: #F59E0B;
+}
+
+[data-theme='dark'] .theme-toggle .toggle-icon-sun {
+  opacity: 0;
+  transform: translateY(-50%) rotate(180deg) scale(0.5);
+}
+
+/* Moon icon — sits on the right, visible in dark mode */
+.theme-toggle .toggle-icon-moon {
+  right: 5px;
+  transform: translateY(-50%) rotate(-180deg) scale(0.5);
+  opacity: 0;
+  color: #93C5FD;
+}
+
+[data-theme='dark'] .theme-toggle .toggle-icon-moon {
+  opacity: 1;
+  transform: translateY(-50%) rotate(0deg) scale(1);
+}
