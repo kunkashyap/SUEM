@@ -4,7 +4,7 @@ import * as THREE from "three";
 
 export default function Heart() {
 
-    const { scene } = useGLTF("/heart.glb");
+    const { scene } = useGLTF("/Heart.glb");
 
     useEffect(() => {
    
