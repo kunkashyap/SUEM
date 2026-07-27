@@ -23,12 +23,41 @@ EMERGENT_LLM_KEY = os.environ.get('EMERGENT_LLM_KEY', '')
 client = AsyncIOMotorClient(MONGO_URL)
 db = client[DB_NAME]
 
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(name)s - %(message)s')
+logger = logging.getLogger("medsim")
+
 app = FastAPI(title="MedSim API")
 api = APIRouter(prefix="/api")
 bearer = HTTPBearer(auto_error=False)
 
 # -------------------- Data seed --------------------
 from data import CATEGORIES, SIMULATIONS, QUIZZES, CLINICAL_CASES, APPENDECTOMY_STEPS, ANATOMY_LAYERS, PROCEDURES, PROCEDURE_META
+
+@app.on_event("startup")
+async def startup_event():
+    logger.info(f"Connected to MongoDB. Target database: '{DB_NAME}'")
+    try:
+        cat_count = await db.categories.count_documents({})
+        if cat_count == 0:
+            logger.info(f"Seeding {len(CATEGORIES)} categories into MongoDB collection 'categories'...")
+            await db.categories.insert_many([c.copy() for c in CATEGORIES])
+            logger.info("Successfully seeded categories collection.")
+        else:
+            logger.info(f"Categories collection existing document count: {cat_count}")
+    except Exception as e:
+        logger.error(f"Error seeding categories collection: {e}")
+
+    try:
+        sim_count = await db.simulations.count_documents({})
+        if sim_count == 0:
+            logger.info(f"Seeding {len(SIMULATIONS)} simulations into MongoDB collection 'simulations'...")
+            await db.simulations.insert_many([s.copy() for s in SIMULATIONS])
+            logger.info("Successfully seeded simulations collection.")
+        else:
+            logger.info(f"Simulations collection existing document count: {sim_count}")
+    except Exception as e:
+        logger.error(f"Error seeding simulations collection: {e}")
+
 
 # -------------------- Models --------------------
 class RegisterIn(BaseModel):
@@ -158,23 +187,57 @@ async def me(user=Depends(get_current_user)):
 # -------------------- Catalog --------------------
 @api.get('/categories')
 async def categories():
-    return CATEGORIES
+    logger.info("GET /api/categories requested")
+    try:
+        items = await db.categories.find({}, {'_id': 0}).to_list(100)
+        if not items:
+            logger.warning("No categories found in MongoDB, returning in-memory CATEGORIES fallback")
+            items = CATEGORIES
+    except Exception as e:
+        logger.error(f"Error querying categories from MongoDB: {e}")
+        items = CATEGORIES
+    logger.info(f"Returning {len(items)} categories")
+    return items
 
 @api.get('/simulations')
 async def list_simulations(category: Optional[str] = None, difficulty: Optional[str] = None):
-    items = SIMULATIONS
-    if category:
-        items = [s for s in items if s['category'] == category]
-    if difficulty:
-        items = [s for s in items if s['difficulty'] == difficulty]
+    logger.info(f"GET /api/simulations requested with category={category!r}, difficulty={difficulty!r}")
+    query = {}
+    if category and category.strip() and category.strip().lower() != 'all':
+        query['category'] = category.strip()
+    if difficulty and difficulty.strip() and difficulty.strip().lower() not in ('any level', 'all'):
+        query['difficulty'] = difficulty.strip()
+
+    logger.info(f"Executing MongoDB query on 'simulations' collection: {query}")
+    try:
+        items = await db.simulations.find(query, {'_id': 0}).to_list(200)
+        if not items and not query:
+            logger.warning("MongoDB returned 0 simulations with empty query, using in-memory SIMULATIONS fallback")
+            items = SIMULATIONS
+    except Exception as e:
+        logger.error(f"MongoDB query failed: {e}. Falling back to in-memory filter")
+        items = SIMULATIONS
+        if category and category.strip() and category.strip().lower() != 'all':
+            items = [s for s in items if s['category'] == category.strip()]
+        if difficulty and difficulty.strip() and difficulty.strip().lower() not in ('any level', 'all'):
+            items = [s for s in items if s['difficulty'] == difficulty.strip()]
+
+    logger.info(f"GET /api/simulations response document count: {len(items)}")
     return items
 
 @api.get('/simulations/{sim_id}')
 async def get_simulation(sim_id: str):
-    for s in SIMULATIONS:
-        if s['id'] == sim_id:
-            return s
-    raise HTTPException(404, 'Not found')
+    logger.info(f"GET /api/simulations/{sim_id} requested")
+    try:
+        doc = await db.simulations.find_one({'id': sim_id}, {'_id': 0})
+    except Exception as e:
+        logger.error(f"Error fetching simulation {sim_id} from MongoDB: {e}")
+        doc = None
+    if not doc:
+        doc = next((s for s in SIMULATIONS if s['id'] == sim_id), None)
+    if not doc:
+        raise HTTPException(404, 'Not found')
+    return doc
 
 @api.get('/procedures/appendectomy/steps')
 async def appendectomy_steps():

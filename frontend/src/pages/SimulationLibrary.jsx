@@ -12,10 +12,43 @@ export default function SimulationLibrary() {
   const diff = params.get('difficulty') || '';
   const [sims, setSims] = useState([]);
   const [cats, setCats] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    api.get('/simulations', { params: { category: cat || undefined, difficulty: diff || undefined } }).then((r) => setSims(r.data));
-    api.get('/categories').then((r) => setCats(r.data));
+    setLoading(true);
+    setError(null);
+    const queryParams = { category: cat || undefined, difficulty: diff || undefined };
+    console.log('[SimulationLibrary] Requesting GET /simulations with params:', queryParams);
+
+    api.get('/simulations', { params: queryParams })
+      .then((r) => {
+        console.log('[SimulationLibrary] Raw API response received:', r.data);
+        if (Array.isArray(r.data)) {
+          setSims(r.data);
+          console.log(`[SimulationLibrary] Loaded ${r.data.length} simulations into state.`);
+        } else {
+          console.error('[SimulationLibrary] Expected array response but got:', typeof r.data, r.data);
+          setSims([]);
+          setError('Invalid API response format');
+        }
+      })
+      .catch((err) => {
+        console.error('[SimulationLibrary] GET /simulations request failed:', err);
+        setSims([]);
+        setError(err.message || 'Failed to connect to simulation server');
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+
+    api.get('/categories')
+      .then((r) => {
+        if (Array.isArray(r.data)) {
+          setCats(r.data);
+        }
+      })
+      .catch((err) => console.error('[SimulationLibrary] GET /categories failed:', err));
   }, [cat, diff]);
 
   const setFilter = (k, v) => {
@@ -104,7 +137,9 @@ export default function SimulationLibrary() {
               </Link>
             );
           })}
-          {sims.length === 0 && <div className="col-span-full text-center py-16 text-slate-500">No simulations match your filters.</div>}
+          {loading && <div className="col-span-full text-center py-16 text-slate-500">Loading simulations...</div>}
+          {!loading && error && <div className="col-span-full text-center py-16 text-rose-500 font-medium">{error}</div>}
+          {!loading && !error && sims.length === 0 && <div className="col-span-full text-center py-16 text-slate-500">No simulations match your filters.</div>}
         </div>
       </div>
     </div>

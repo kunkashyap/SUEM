@@ -1,8 +1,12 @@
+import { useRef } from "react";
 import { Canvas } from "@react-three/fiber";
 import Heart from "../Heart";
 import { Environment, OrbitControls } from "@react-three/drei";
+import SurgicalToolSystem from "../SurgicalToolSystem";
 
 function HeartViewer() {
+    const heartGroupRef = useRef();
+
     return (
         <div style={{ width: "100vw", height: "100vh" }}>
             <Canvas
@@ -61,15 +65,19 @@ function HeartViewer() {
                     background={false}
                 />
 
-                <OrbitControls/>
+                <OrbitControls makeDefault />
 
-                <Heart/>
+                <group ref={heartGroupRef}>
+                    <Heart/>
+                </group>
+
+                <SurgicalToolSystem heartRootRef={heartGroupRef} activeTool="scalpel" />
 
 
                 <mesh
                 receiveShadow
                 rotation={[-Math.PI / 2, 0, 0]}
-                position={[0, -1.2, 0]}
+                position={[0, -1.25, 0]}
                 >
 
                 <planeGeometry args={[20,20]} />

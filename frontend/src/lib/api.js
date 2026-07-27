@@ -18,10 +18,10 @@
 import axios from 'axios';
 
 const BACKEND_URL =
-  (process.env.REACT_APP_BACKEND_URL || '').replace(/\/$/, '');
+  (process.env.REACT_APP_BACKEND_URL || 'http://localhost:5000').replace(/\/$/, '');
 
-console.log("BACKEND_URL =", BACKEND_URL);
-console.log("API =", `${BACKEND_URL}/api`);
+console.log("[MedSim API] BACKEND_URL =", BACKEND_URL);
+console.log("[MedSim API] API BaseURL =", `${BACKEND_URL}/api`);
 
 export const API = `${BACKEND_URL}/api`;
 
