@@ -17,7 +17,8 @@
 
 import axios from 'axios';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || '';
+const BACKEND_URL =
+  (process.env.REACT_APP_BACKEND_URL || '').replace(/\/$/, '');
 
 console.log("BACKEND_URL =", BACKEND_URL);
 console.log("API =", `${BACKEND_URL}/api`);
