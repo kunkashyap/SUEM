@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Nav from '@/components/Nav';
-import AnatomyFigure from '@/components/AnatomyFigure';
+import HumanModelViewer from '@/components/HumanModelViewer';
 import api from '@/lib/api';
 import { Slider } from '@/components/ui/slider';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -75,7 +75,7 @@ export default function FullBodyExplorer() {
 
           <div className={`h-full flex items-center justify-center py-8 ${imgMode !== 'none' ? 'bg-slate-950' : ''}`}
             style={imgMode === 'xray' ? { filter: 'invert(1) hue-rotate(180deg) contrast(1.4)' } : imgMode === 'mri' ? { filter: 'grayscale(1) contrast(1.3) brightness(0.9)' } : imgMode === 'ct' ? { filter: 'grayscale(1) brightness(1.2) contrast(1.5)' } : {}}>
-            <AnatomyFigure layers={displayOps} className="h-[70vh] w-auto" spin={spin} />
+            <HumanModelViewer spin={spin} className="h-[70vh] w-full" />
           </div>
         </main>
 
