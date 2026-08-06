@@ -438,8 +438,6 @@ async def leaderboard():
 #                 results.append({'type': 'anatomy', 'id': st['id'], 'title': st['name'], 'layer': layer['name']})
 #     return results[:30]
 
-app.include_router(api)
-
 _default_origins = 'http://localhost:3000,http://127.0.0.1:3000'
 _cors_origins_raw = os.environ.get('CORS_ORIGINS', _default_origins)
 _cors_origins = [o.strip() for o in _cors_origins_raw.split(',') if o.strip()]
@@ -451,6 +449,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.include_router(api)
 
 if __name__ == "__main__":
     import uvicorn

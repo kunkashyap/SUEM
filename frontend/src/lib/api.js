@@ -35,7 +35,7 @@ api.interceptors.response.use(
   (error) => {
     if (!error.response) {
       // No HTTP response received — the backend is unreachable.
-      const msg = 'backend offline – cannot reach http://localhost:5000. Start the FastAPI server.';
+      const msg = `backend offline – cannot reach ${BACKEND_URL}. Check that the backend service is running.`;
       console.error('[MedSim API] Network error:', msg, error);
       error.message = msg;
     } else {
