@@ -28,4 +28,36 @@ api.interceptors.request.use((cfg) => {
   return cfg;
 });
 
+// Map raw Axios/HTTP errors to descriptive messages so the UI can display
+// useful context instead of a generic "Network Error".
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (!error.response) {
+      // No HTTP response received — the backend is unreachable.
+      const msg = 'backend offline – cannot reach http://localhost:5000. Start the FastAPI server.';
+      console.error('[MedSim API] Network error:', msg, error);
+      error.message = msg;
+    } else {
+      const status = error.response.status;
+      if (status === 404) {
+        const msg = `endpoint missing – ${error.config?.url} returned 404`;
+        console.error('[MedSim API] 404:', msg);
+        error.message = msg;
+      } else if (status === 500) {
+        const detail = error.response?.data?.detail || '';
+        const isDbError = /mongo|database|collection|pymongo/i.test(detail);
+        const msg = isDbError
+          ? `database unavailable – ${detail}`
+          : `internal server error (500) – ${detail || 'check backend logs'}`;
+        console.error('[MedSim API] 500:', msg);
+        error.message = msg;
+      } else {
+        console.error(`[MedSim API] HTTP ${status}:`, error.response?.data);
+      }
+    }
+    return Promise.reject(error);
+  }
+);
+
 export default api;

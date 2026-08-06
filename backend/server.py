@@ -13,6 +13,13 @@ import os, uuid, logging, json, bcrypt, jwt
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
+# ---- Validate required environment variables ----
+_MISSING = [v for v in ('MONGO_URL', 'DB_NAME', 'JWT_SECRET') if not os.environ.get(v)]
+if _MISSING:
+    logger_boot = logging.getLogger("medsim.boot")
+    logger_boot.critical(f"✗ Missing required environment variables: {_MISSING}. Check your .env file.")
+    raise SystemExit(f"Missing env vars: {_MISSING}")
+
 MONGO_URL = os.environ['MONGO_URL']
 DB_NAME = os.environ['DB_NAME']
 JWT_SECRET = os.environ['JWT_SECRET']
@@ -20,11 +27,14 @@ JWT_ALGORITHM = os.environ.get('JWT_ALGORITHM', 'HS256')
 JWT_EXPIRE_MINUTES = int(os.environ.get('JWT_EXPIRE_MINUTES', '10080'))
 EMERGENT_LLM_KEY = os.environ.get('EMERGENT_LLM_KEY', '')
 
-client = AsyncIOMotorClient(MONGO_URL)
+# serverSelectionTimeoutMS prevents the server from hanging on startup
+# when MongoDB Atlas is temporarily unreachable.
+client = AsyncIOMotorClient(MONGO_URL, serverSelectionTimeoutMS=2000)
 db = client[DB_NAME]
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(name)s - %(message)s')
 logger = logging.getLogger("medsim")
+logger.info("✓ Environment Loaded")
 
 app = FastAPI(title="MedSim API")
 api = APIRouter(prefix="/api")
@@ -35,28 +45,40 @@ from data import CATEGORIES, SIMULATIONS, QUIZZES, CLINICAL_CASES, APPENDECTOMY_
 
 @app.on_event("startup")
 async def startup_event():
-    logger.info(f"Connected to MongoDB. Target database: '{DB_NAME}'")
-    try:
-        cat_count = await db.categories.count_documents({})
-        if cat_count == 0:
-            logger.info(f"Seeding {len(CATEGORIES)} categories into MongoDB collection 'categories'...")
-            await db.categories.insert_many([c.copy() for c in CATEGORIES])
-            logger.info("Successfully seeded categories collection.")
-        else:
-            logger.info(f"Categories collection existing document count: {cat_count}")
-    except Exception as e:
-        logger.error(f"Error seeding categories collection: {e}")
+    logger.info("✓ Server Started")
+    logger.info("✓ Registered Routes: /api/categories, /api/simulations, /api/auth/*, /api/quizzes, /api/cases, /api/attempts, /api/dashboard/*, /api/leaderboard")
 
+    # --- MongoDB connectivity check ---
+    mongo_ok = False
     try:
-        sim_count = await db.simulations.count_documents({})
-        if sim_count == 0:
-            logger.info(f"Seeding {len(SIMULATIONS)} simulations into MongoDB collection 'simulations'...")
-            await db.simulations.insert_many([s.copy() for s in SIMULATIONS])
-            logger.info("Successfully seeded simulations collection.")
-        else:
-            logger.info(f"Simulations collection existing document count: {sim_count}")
+        await client.admin.command('ping')
+        logger.info(f"✓ Mongo Connected  (database: '{DB_NAME}')")
+        mongo_ok = True
     except Exception as e:
-        logger.error(f"Error seeding simulations collection: {e}")
+        logger.error(f"✗ Mongo Connection Failed: {e}. Endpoints will use in-memory fallback data.")
+
+    if mongo_ok:
+        try:
+            cat_count = await db.categories.count_documents({})
+            if cat_count == 0:
+                logger.info(f"Seeding {len(CATEGORIES)} categories into MongoDB collection 'categories'...")
+                await db.categories.insert_many([c.copy() for c in CATEGORIES])
+                logger.info("Successfully seeded categories collection.")
+            else:
+                logger.info(f"Categories collection existing document count: {cat_count}")
+        except Exception as e:
+            logger.error(f"Error seeding categories collection: {e}")
+
+        try:
+            sim_count = await db.simulations.count_documents({})
+            if sim_count == 0:
+                logger.info(f"Seeding {len(SIMULATIONS)} simulations into MongoDB collection 'simulations'...")
+                await db.simulations.insert_many([s.copy() for s in SIMULATIONS])
+                logger.info("Successfully seeded simulations collection.")
+            else:
+                logger.info(f"Simulations collection existing document count: {sim_count}")
+        except Exception as e:
+            logger.error(f"Error seeding simulations collection: {e}")
 
 
 # -------------------- Models --------------------
@@ -418,13 +440,23 @@ async def leaderboard():
 
 app.include_router(api)
 
+_default_origins = 'http://localhost:3000,http://127.0.0.1:3000'
+_cors_origins_raw = os.environ.get('CORS_ORIGINS', _default_origins)
+_cors_origins = [o.strip() for o in _cors_origins_raw.split(',') if o.strip()]
+
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
-    allow_origins=os.environ.get('CORS_ORIGINS', '*').split(','),
+    allow_origins=_cors_origins,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+if __name__ == "__main__":
+    import uvicorn
+    _port = int(os.environ.get('PORT', 5000))
+    logger.info(f"✓ Listening Port: {_port}")
+    uvicorn.run("server:app", host="0.0.0.0", port=_port, reload=True)
 
 # logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 

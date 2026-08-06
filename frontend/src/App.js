@@ -25,6 +25,10 @@ import HeartViewer from './components/HeartViewer/HeartViewer';
 import HeartSimulation from "@/pages/HeartSimulation";
 
 
+import DocsLayout from '@/pages/Docs/DocsLayout';
+import DocsPage from '@/pages/Docs/DocsPage';
+
+
 function Protected({ children }) {
   const { user, loading } = useAuth();
   if (loading) return <div className="min-h-screen flex items-center justify-center text-slate-500">Loading…</div>;
@@ -56,6 +60,10 @@ export default function App() {
             <Route path="/team" element={<Protected><TeamMode /></Protected>} />
             <Route path="/search" element={<Search />} />
             <Route path="/heart" element={<HeartSimulation />} />
+            <Route path="/docs" element={<DocsLayout />}>
+              <Route index element={<Navigate to="/docs/introduction" replace />} />
+              <Route path=":slug" element={<DocsPage />} />
+            </Route>
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
           <AITutor />

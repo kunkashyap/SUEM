@@ -12,6 +12,7 @@ const links = [
   { to: '/team', label: 'Team OR' },
   { to: '/cases', label: 'Cases' },
   { to: '/quizzes', label: 'Quizzes' },
+  { to: '/docs', label: 'Docs' },
 ];
 
 export default function Nav() {
