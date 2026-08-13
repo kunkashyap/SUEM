@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # 🫀 MedSim – Interactive Surgical Training & 3D Medical Simulation Platform
 
 ![React](https://img.shields.io/badge/Frontend-React-blue)
@@ -169,8 +168,6 @@ surgery_reo/
 ---
 
 ## Clinical Cases
-
-<<<<<<< HEAD
 Practice diagnosis using realistic patient scenarios.
 
 Users analyze:
@@ -305,14 +302,13 @@ Optimized for:
 - Zod
 - Recharts
 - Lucide Icons
->>>>>>> 8f0359a12ae61c865347147ef0eee84171aacbeb
+
 
 ---
 
 ## Backend
 
 - FastAPI
-<<<<<<< HEAD
 - Python
 - JWT Authentication
 - BCrypt
@@ -328,15 +324,11 @@ Optimized for:
 - Python Dotenv
 - Pandas
 - NumPy
->>>>>>> 8f0359a12ae61c865347147ef0eee84171aacbeb
-
 ---
 
 ## Database
 
 MongoDB
-
-<<<<<<< HEAD
 Collections include:
 
 - Users
@@ -452,7 +444,6 @@ cd surgery_reo
 
 ---
 
-<<<<<<< HEAD
 # Frontend Installation
 
 Navigate to the frontend directory.
@@ -492,7 +483,6 @@ Navigate to the backend folder.
 ## Step 1
 
 Navigate into backend
->>>>>>> 8f0359a12ae61c865347147ef0eee84171aacbeb
 
 ```bash
 cd backend
@@ -500,7 +490,7 @@ cd backend
 
 ---
 
-<<<<<<< HEAD
+
 ## Create a Virtual Environment
 
 ### Windows
@@ -510,7 +500,6 @@ cd backend
 Create Virtual Environment
 
 Windows
->>>>>>> 8f0359a12ae61c865347147ef0eee84171aacbeb
 
 ```bash
 python -m venv venv
@@ -526,13 +515,11 @@ Activate it.
 Activate Virtual Environment
 
 Windows
->>>>>>> 8f0359a12ae61c865347147ef0eee84171aacbeb
 
 ```bash
 venv\Scripts\activate
 ```
 
-<<<<<<< HEAD
 ### Linux / macOS
 
 ```bash
@@ -548,19 +535,18 @@ source venv/bin/activate
 
 ---
 
-<<<<<<< HEAD
+
 ## Install Python Dependencies
 =======
 ## Step 4
 
 Install Dependencies
->>>>>>> 8f0359a12ae61c865347147ef0eee84171aacbeb
+
 
 ```bash
 pip install -r requirements.txt
 ```
 
-<<<<<<< HEAD
 If your `requirements.txt` is outdated, install the packages manually.
 
 ```bash
@@ -599,13 +585,13 @@ Create a file named
 
 ```
 backend/.env
->>>>>>> 8f0359a12ae61c865347147ef0eee84171aacbeb
+
 ```
 
 Example:
 
 ```env
-<<<<<<< HEAD
+
 MONGO_URL=your_mongodb_connection_string
 
 DB_NAME=medsim
@@ -652,12 +638,10 @@ JWT_SECRET=your-secret-key
 JWT_ALGORITHM=HS256
 JWT_EXPIRE_MINUTES=10080
 EMERGENT_LLM_KEY=
->>>>>>> 8f0359a12ae61c865347147ef0eee84171aacbeb
 ```
 
 ---
 
-<<<<<<< HEAD
 # Start the Backend Server
 
 Run
@@ -681,7 +665,6 @@ uvicorn server:app --reload
 The backend server will start at
 =======
 Backend will start on
->>>>>>> 8f0359a12ae61c865347147ef0eee84171aacbeb
 
 ```
 http://127.0.0.1:8000
@@ -716,7 +699,6 @@ Swagger UI
 # API Documentation
 
 Swagger
->>>>>>> 8f0359a12ae61c865347147ef0eee84171aacbeb
 
 ```
 http://127.0.0.1:8000/docs
@@ -728,7 +710,6 @@ ReDoc
 http://127.0.0.1:8000/redoc
 ```
 
-<<<<<<< HEAD
 These pages allow you to test every API endpoint directly from your browser.
 
 ---
@@ -810,13 +791,10 @@ npm run dev
 ---
 
 Frontend usually runs on
->>>>>>> 8f0359a12ae61c865347147ef0eee84171aacbeb
-
 ```
 http://localhost:3000
 ```
 
-<<<<<<< HEAD
 Your MedSim application should now be running successfully.
 
 ---
@@ -907,7 +885,6 @@ deactivate
 ---
 
 Install Python Packages
->>>>>>> 8f0359a12ae61c865347147ef0eee84171aacbeb
 
 ```bash
 pip install -r requirements.txt
@@ -915,7 +892,6 @@ pip install -r requirements.txt
 
 ---
 
-<<<<<<< HEAD
 ### Port 8000 Already in Use
 
 Terminate the process using the port or start Uvicorn on another port.
@@ -932,7 +908,6 @@ python -m uvicorn server:app --reload
 
 ---
 
-<<<<<<< HEAD
 ### Port 3000 Already in Use
 
 React will prompt you to run on another available port.
@@ -1110,4 +1085,3 @@ to access the API documentation.
 # License
 
 This project is intended for educational and research purposes.
->>>>>>> 8f0359a12ae61c865347147ef0eee84171aacbeb
